@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Creation Patterns/ViewController.swift"
-            timestampString = "506201440.477374"
+            timestampString = "506411124.280486"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
             landmarkName = "stockLevelDidChange(_:)"
             landmarkType = "5">
          </BreakpointContent>

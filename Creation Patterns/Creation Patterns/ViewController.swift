@@ -24,23 +24,52 @@ class ProductTableCell: UITableViewCell {
 
 class ViewController: UIViewController, UITableViewDataSource {
 
-    var products = [
     
-        ("Kayak", "A boat for one person", "Watersports", 275.0, 10),
-        ("Lifejacket", "Protective and fashionable", "Watersports", 48.95, 14),
-        ("Soccer Ball", "FIFA-approved size and weight", "Soccer", 19.5, 32),
-        ("Corner Flags", "Give your playing field a professional touch",
-            "Soccer", 34.95, 1),
-        ("Stadium", "Flat-packed 35,000-seat stadium", "Soccer", 79500.0, 4),
-        ("Thinking Cap", "Improve your brain efficiency by 75%", "Chess", 16.0, 8),
-        ("Unsteady Chair", "Secretly give your opponent a disadvantage",
-            "Chess", 29.95, 3),
-        ("Human Chess Board", "A fun game for the family", "Chess", 75.0, 2),
-        ("Bling-Bling King", "Gold-plated, diamond-studded King",
-            "Chess", 1200.0, 4)
+    //MARK: Onject Template Pattern
+    
+    class Product {
+        var name: String
+        var description: String
+        var price: Double
+        var stock: Int
         
+        init (name: String, description: String, price: Double, stock: Int) {
+            self.name = name
+            self.description = description
+            self.price = price
+            self.stock = stock
+        }
+        
+        func calculateTax(rate: Double) -> Double {
+            return self.price*rate
+        }
+        
+        var stockValue: Double {
+            get {
+                return self.price * Double(self.stock)
+            }
+        }
+    }
+    
+    
+    var products = [
+        
+        Product(name: "Kayak", description: "A boat for one person", price: 275.0, stock: 10),
+        Product(name: "Lifejacket", description: "Protective and fashionable", price: 48.95, stock: 14),
+        Product(name: "Corner Flags", description: "Give your playing field a professional touch", price: 34.95, stock: 1),
+
     ]
     
+
+    
+    func calculateStockValue(productsArray:[Product]) -> Double {
+        return productsArray.reduce(0, combine: {(total, product) -> Double in
+            return total + product.stockValue
+        })
+    }
+    
+    
+
     @IBOutlet weak var totalStockLabel: UILabel!
     @IBOutlet weak var productTableView: UITableView!
 
@@ -48,6 +77,10 @@ class ViewController: UIViewController, UITableViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
         displayStockLabel()
+        
+        print ("Sales tax for Kayak: \(calculateStockValue(products))")
+        print ("Total value of stock: \(products[0].stockValue))")
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -70,7 +103,7 @@ class ViewController: UIViewController, UITableViewDataSource {
         //another solution. refactored
         
         let totalStock = products.reduce(0, combine:
-            {(numbers, product) -> Int in return numbers + product.4})
+            {(numbers, product) -> Int in return numbers + product.stock})
 
         totalStockLabel.text = "\(totalStock) Products in store"
     }
@@ -84,10 +117,10 @@ class ViewController: UIViewController, UITableViewDataSource {
         let product = products[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier("ProductCell") as! ProductTableCell
         cell.productId = indexPath.row
-        cell.productName.text = product.0
-        cell.productDescription.text = product.1
-        cell.productStepper.value = Double(product.4)
-        cell.productTextFiled.text = String(product.4)
+        cell.productName.text = product.name
+        cell.productDescription.text = product.description
+        cell.productStepper.value = Double(product.price)
+        cell.productTextFiled.text = String(product.stockValue)
         
         return cell
     }
@@ -110,7 +143,7 @@ class ViewController: UIViewController, UITableViewDataSource {
                         }
                         
                         if let level = newStockLevel {
-                            products[id].4 = level
+                            products[id].stock = level
                             cell.productStepper.value = Double(level)
                             cell.productTextFiled.text = String(level)
                         }
