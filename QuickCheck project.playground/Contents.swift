@@ -5,8 +5,22 @@ import UIKit
 var str = "Hello, playground"
 
 
+struct ArbitaryInstance<T> {
+    let arbitary: () -> T
+    let smaller: T -> T?
+}
+
+
+//protocol, that returns a value of type Self.
+
 protocol Arbitary {
     static func arbitary() -> Self
+}
+
+//To make it shorten
+
+protocol Shorten {
+    func smaller() -> Self?
 }
 
 //Generating randomn Int
@@ -14,6 +28,12 @@ protocol Arbitary {
 extension Int: Arbitary {
     static func arbitary() -> Int {
         return Int(arc4random())
+    }
+}
+
+extension Int: Shorten {
+    func smaller() -> Int? {
+        return self == 0 ? nil : self/2
     }
 }
 
@@ -32,7 +52,27 @@ extension String: Arbitary {
         
         return String(randomnCharacter)
     }
-    
+}
+
+extension Array: Shorten {
+    func smaller() -> Array? {
+        guard !isEmpty else { return nil }
+        return Array(dropFirst())
+    }
+}
+
+
+extension Array where Element:Arbitary {
+    static func arbitary() -> [Element] {
+        let randomnLenth = Int(arc4random() % 50)
+        return tabulate(randomnLenth) { _ in Element.arbitary() }
+    }
+}
+
+extension String: Shorten {
+    func smaller() -> String? {
+        return isEmpty ? nil : String(characters.dropFirst())
+    }
 }
 
 //Generating randomn String
@@ -48,9 +88,77 @@ func tabulate<A>(times: Int, transform: Int -> A) -> [A] {
 }
 
 
+//Practice
 
 Int.arbitary()
 
+100.smaller()
+
 String.arbitary()
 
 String.arbitary()
+
+"London is a capital".smaller()
+
+[1,2,3].smaller()
+
+Array.arbitary()
+
+
+
+//Check condition function
+
+func checkOne <A: Arbitary> (message: String, _ property: A -> Bool) -> () {
+    
+    let numberOfIterations = 2
+    
+    for i in 0..<numberOfIterations {
+        let value = A.arbitary()
+        
+        guard property(value) else {
+            
+            print ( " \"\( message)\" doesn't hold: \(value)")
+            return
+        }
+        
+    }
+    
+    print ( " \"\( message)\" passed \(numberOfIterations) tests.")
+    
+}
+
+
+//Check String
+checkOne("Every String starts with Hello", { (s: String) in
+    s.hasPrefix("Hello")
+})
+
+
+func iterateWhile<A>(condition: A-> Bool, initial: A, next: A-> A?) -> A {
+    if let x = next(initial) where condition(x) {
+        return iterateWhile(condition, initial: x, next: next)
+    }
+    
+    return initial
+}
+
+
+
+
+func quickSort(var array: [Int]) -> [Int] {
+    if array.isEmpty {return [0]}
+    
+    let pivot = array.removeAtIndex(0)
+    let lesser = array.filter { $0 < pivot }
+    let greater = array.filter { $0 > pivot }
+    
+    return quickSort(lesser) + [pivot] + quickSort(greater)
+    
+}
+
+
+
+
+
+
+
