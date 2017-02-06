@@ -10,6 +10,27 @@ struct ArbitaryInstance<T> {
     let smaller: T -> T?
 }
 
+protocol GeneratorType {
+    typealias Element
+    func next() -> Element?
+}
+
+protocol SequenceType {
+    typealias Generator: GeneratorType
+    func generate() -> Generator
+}
+
+//Apply generators
+extension GeneratorType {
+    mutating func find(predicate: Element -> Bool) -> Element? {
+        while let x = self.next() { if predicate(x) {
+            return x }
+        }
+        return nil
+    }
+}
+
+
 
 //protocol, that returns a value of type Self.
 
@@ -17,7 +38,7 @@ protocol Arbitary {
     static func arbitary() -> Self
 }
 
-//To make it shorten
+//To shrink counterexamples that were covered by our tests.
 
 protocol Shorten {
     func smaller() -> Self?
@@ -55,7 +76,7 @@ extension String: Arbitary {
 }
 
 extension Array: Shorten {
-    func smaller() -> Array? {
+    func smaller() -> [Element]? {
         guard !isEmpty else { return nil }
         return Array(dropFirst())
     }
@@ -101,8 +122,6 @@ String.arbitary()
 "London is a capital".smaller()
 
 [1,2,3].smaller()
-
-Array.arbitary()
 
 
 

@@ -17,7 +17,7 @@ class ProductTableCell: UITableViewCell {
     @IBOutlet weak var productStepper: UIStepper!
     @IBOutlet weak var productTextFiled: UITextField!
     
-    var productId: Int?
+    var product: Product?
     
 }
 
@@ -116,7 +116,7 @@ class ViewController: UIViewController, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let product = products[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier("ProductCell") as! ProductTableCell
-        cell.productId = indexPath.row
+        //cell.product = products[indexPath.row]
         cell.productName.text = product.name
         cell.productDescription.text = product.description
         cell.productStepper.value = Double(product.price)
@@ -130,25 +130,17 @@ class ViewController: UIViewController, UITableViewDataSource {
             while (true) {
                 currentCell = currentCell.superview!
                 if let cell = currentCell as? ProductTableCell {
-                    if let id = cell.productId {
-                        
-                        var newStockLevel: Int?
-                        
-                        if let stepper = sender as? UIStepper {
-                            newStockLevel = Int(stepper.value)
-                        } else if let textField = sender as? UITextField {
-                            if let newValue = textField.text {
-                                newStockLevel = Int(newValue)
-                            }
+                        if let product = cell.product {
+                            if let stepper = sender as? UIStepper {
+                                product.stockLevel = Int(stepper.value);
+                            } else if let textfield = sender as? UITextField {
+                                if let newValue = Int(textfield.text!) {
+                                    product.stockLevel = newValue
+                                    
+                                } }
+                            cell.productStepper.value = Double(product.stockLevel);
+                            cell.productTextFiled.text = String(product.stockLevel);
                         }
-                        
-                        if let level = newStockLevel {
-                            products[id].stock = level
-                            cell.productStepper.value = Double(level)
-                            cell.productTextFiled.text = String(level)
-                        }
-                    }
-                    
                     break
                         
                     }

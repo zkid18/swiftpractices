@@ -19,6 +19,7 @@ enum Add<T,U> {
     case InRight(T)
 }
 
+
 let exampleSuccess: PopualtionResult = .Success(100)
 
 let mayors = [
@@ -176,6 +177,10 @@ extension Array {
     }
 }
 
+var sampleArr = [1,2,5,8,9]
+print(sampleArr.decomposite)
+
+
 
 //recursive sum of two arrays
 func sum(xs: [Int]) -> Int {
@@ -288,12 +293,12 @@ extension Trie {
 
 
 
-func buildStringTie(words: [String]) -> Trie<Character> {
-    let emptyTrie = Trie<Character>()
-    
-    return words.reduce(emptyTrie) { trie, word in
-        trie.insert(Array(word.characters)) }
-}
+//func buildStringTie(words: [String]) -> Trie<Character> {
+//    let emptyTrie = Trie<Character>()
+//    
+//    return words.reduce(emptyTrie) { trie, word in
+//        trie.insert(Array(word.characters)) }
+//}
 
 
 
